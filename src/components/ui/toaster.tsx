@@ -1,9 +1,24 @@
-import React from 'react'
+import { useToast } from "@/hooks/use-toast";
+import { Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from "@/components/ui/toast";
 
-export const Toaster: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className = '', children, ...props }) => (
-  <div aria-live="polite" className={[`ui-toaster`, className].filter(Boolean).join(' ')} {...props}>
-    {children}
-  </div>
-)
+export function Toaster() {
+  const { toasts } = useToast();
 
-export default Toaster
+  return (
+    <ToastProvider>
+      {toasts.map(function ({ id, title, description, action, ...props }) {
+        return (
+          <Toast key={id} {...props}>
+            <div className="grid gap-1">
+              {title && <ToastTitle>{title}</ToastTitle>}
+              {description && <ToastDescription>{description}</ToastDescription>}
+            </div>
+            {action}
+            <ToastClose />
+          </Toast>
+        );
+      })}
+      <ToastViewport />
+    </ToastProvider>
+  );
+}
